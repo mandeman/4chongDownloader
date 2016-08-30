@@ -1,6 +1,7 @@
 import urllib.request
 from bs4 import BeautifulSoup
 import requests
+import threading
 import datetime                 #only to generate logname
 
 #Downloader logic. Accepts Image URL and storage location
@@ -11,15 +12,13 @@ def downloader(addr, loc):
     #Why return 1?
 
 #Crawl logic
-def crawler(urlname, res_val):
+def crawler(urlname, res_val, loc):
     #Get source code from the webpage
     source_code = requests.get(urlname).text
 
     #Turn the source code into beautiful soup object
     #Really beautiful tbh
     soup = BeautifulSoup(source_code, "html.parser")
-
-    loc = input("Enter storage location : ")
 
     logname = str(datetime.datetime.now()).replace('.', "-")
     logname = logname.replace(':', '-')
@@ -34,8 +33,8 @@ def crawler(urlname, res_val):
     for link in soup.findAll('a', {'class': 'fileThumb'}):
         #Download only the images that are greater than/equal to the resume value
         if i >= res_val :
-            #Get the address of the links in string form
-            address = str(link.get('href'))
+            #Get the address of the links
+            address = link.get('href')
             name = address[15:]
 
             #log file writing
@@ -49,8 +48,10 @@ def crawler(urlname, res_val):
 
 
 url = input("Enter the URL : ")
+url = url.rstrip()
 resume_val = int(input("""Did the program halt?
 If yes, then at what point?
 If no, just hit enter.""") or "1")
-crawler(url, resume_val)
+loc = input("Enter storage location : ")
+crawler(url, resume_val, loc)
 print("Done with the downloads!")
