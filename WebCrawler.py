@@ -6,7 +6,7 @@ import datetime                 #only to generate logname
 
 #Downloader logic. Accepts Image URL and storage location
 def downloader(addr, loc):
-    name = addr[18:]
+    name = addr[15:]
     urllib.request.urlretrieve('http:' + addr, loc + '\\' + name)
     return 1
     #Why return 1?
